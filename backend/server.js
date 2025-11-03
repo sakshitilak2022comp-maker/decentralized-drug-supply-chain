@@ -54,31 +54,67 @@ db.connect((err) => {
 });
 
 // ✅ Register User (Sign Up)
+// app.post("/register", (req, res) => {
+//   const { firstName, lastName, mobile, email, password } = req.body;
+//   if (!firstName || !lastName || !mobile || !email || !password)
+//     return res
+//       .status(400)
+//       .json({ success: false, message: "All fields required" });
+
+//   const checkQuery = "SELECT * FROM users WHERE email = ? OR mobile = ?";
+//   db.query(checkQuery, [email, mobile], (err, results) => {
+//     if (err) return res.status(500).json({ success: false, message: err });
+//     if (results.length > 0)
+//       return res
+//         .status(409)
+//         .json({ success: false, message: "User already exists" });
+
+//     const insertQuery = `
+//       INSERT INTO users (first_name, last_name, mobile, email, password, created_at)
+//       VALUES (?, ?, ?, ?, ?, NOW())
+//     `;
+//     db.query(insertQuery, [firstName, lastName, mobile, email, password], (err) => {
+//       if (err) return res.status(500).json({ success: false, message: err });
+//       res.status(200).json({ success: true, message: "Registration successful" });
+//     });
+//   });
+// });
+
 app.post("/register", (req, res) => {
   const { firstName, lastName, mobile, email, password } = req.body;
+
+  console.log("📨 Incoming Registration Request:", req.body); // 👈 see data sent
+
   if (!firstName || !lastName || !mobile || !email || !password)
-    return res
-      .status(400)
-      .json({ success: false, message: "All fields required" });
+    return res.status(400).json({ success: false, message: "All fields required" });
 
   const checkQuery = "SELECT * FROM users WHERE email = ? OR mobile = ?";
   db.query(checkQuery, [email, mobile], (err, results) => {
-    if (err) return res.status(500).json({ success: false, message: err });
+    if (err) {
+      console.error("❌ Error checking users:", err);
+      return res.status(500).json({ success: false, message: `Check query error: ${err.sqlMessage}` });
+    }
+
+    console.log("🔍 Check Query Results:", results.length);
+
     if (results.length > 0)
-      return res
-        .status(409)
-        .json({ success: false, message: "User already exists" });
+      return res.status(409).json({ success: false, message: "User already exists" });
 
     const insertQuery = `
       INSERT INTO users (first_name, last_name, mobile, email, password, created_at)
       VALUES (?, ?, ?, ?, ?, NOW())
     `;
     db.query(insertQuery, [firstName, lastName, mobile, email, password], (err) => {
-      if (err) return res.status(500).json({ success: false, message: err });
+      if (err) {
+        console.error("❌ Error inserting new user:", err);
+        return res.status(500).json({ success: false, message: `Insert error: ${err.sqlMessage}` });
+      }
+      console.log("✅ User inserted successfully!");
       res.status(200).json({ success: true, message: "Registration successful" });
     });
   });
 });
+
 
 // ✅ Login User (Sign In)
 app.post("/login", (req, res) => {
