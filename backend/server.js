@@ -192,7 +192,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://decentralized-drug-supply.netlify.app/", // 🔁 replace with your actual Netlify URL
+      "https://decentralized-drug-supply.netlify.app", // 🔁 replace with your actual Netlify URL
       "http://localhost:5500", // local testing
       "http://127.0.0.1:5500",
     ],
