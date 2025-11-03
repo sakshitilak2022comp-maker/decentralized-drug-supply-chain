@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>💊 PharmaChain Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <script>
+  // If user is not logged in, redirect to signin-signup.html
+  if (!localStorage.getItem("loggedInUser")) {
+    window.location.href = "signin-signup.html";
+  }
+</script>
+
+  <header>
+    <h1>💊 PharmaChain</h1>
+    <button id="connectBtn">Connect MetaMask</button>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </header>
+
+  <main>
+    <section class="card fade-in">
+      <h2>Create New Drug Batch</h2>
+      <input id="batchName" type="text" placeholder="Drug Name" />
+      <input id="batchDesc" type="text" placeholder="Description" />
+      <label>Manufacturing Date:</label>
+      <input id="mDate" type="date" />
+      <label>Expiry Date:</label>
+      <input id="eDate" type="date" />
+      <button id="createBtn">Create Batch</button>
+      <div id="batchResult" class="result"></div>
+    </section>
+
+    <section class="card fade-in">
+      <h2>Track Batch</h2>
+      <input id="batchId" type="number" placeholder="Enter Batch ID" />
+      <button id="trackBtn">Track Batch</button>
+      <div id="batchInfo"></div>
+    </section>
+
+    <!-- <section class="card fade-in">
+      <h2>Transfer Ownership</h2>
+      <input id="transferId" type="number" placeholder="Batch ID" />
+      <input id="newOwner" type="text" placeholder="New Owner Address" />
+      <button id="transferBtn">Transfer</button>
+    </section> -->
+
+    <section class="card fade-in">
+      <h2>All Batches</h2>
+      <button id="viewAllBtn">View All</button>
+      <div id="allBatches"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>🔗 Powered by Ethereum & Hardhat | © 2025 PharmaChain</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
