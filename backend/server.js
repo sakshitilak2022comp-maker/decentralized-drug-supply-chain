@@ -34,8 +34,8 @@ db.connect((err) => {
 
 // ✅ Register User (Sign Up)
 app.post("/register", (req, res) => {
-  const { firstName, lastName, mobile, email, password, role } = req.body;
-  if (!firstName || !lastName || !mobile || !email || !password || !role)
+  const { firstName, lastName, mobile, email, password } = req.body;
+  if (!firstName || !lastName || !mobile || !email || !password)
     return res.status(400).json({ success: false, message: "All fields required" });
 
   const checkQuery = "SELECT * FROM users WHERE email = ? OR mobile = ?";
@@ -45,10 +45,10 @@ app.post("/register", (req, res) => {
       return res.status(409).json({ success: false, message: "User already exists" });
 
     const insertQuery = `
-      INSERT INTO users (first_name, last_name, mobile, email, password, role, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, NOW())
-    `;
-    db.query(insertQuery, [firstName, lastName, mobile, email, password, role], (err) => {
+      INSERT INTO users (first_name, last_name, mobile, email, password, created_at)
+      VALUES (?, ?, ?, ?, ?, NOW())
+`   ;
+    db.query(insertQuery, [firstName, lastName, mobile, email, password], (err) => {
       if (err) return res.status(500).json({ success: false, message: err });
       res.status(200).json({ success: true, message: "Registration successful" });
     });
@@ -77,7 +77,6 @@ app.post("/login", (req, res) => {
       user: {
         id: user.id,
         name: user.first_name,
-        role: user.role,
       },
     });
   });

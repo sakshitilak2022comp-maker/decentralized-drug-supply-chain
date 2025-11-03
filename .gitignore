@@ -1,0 +1,14 @@
+# Node modules
+node_modules/
+
+# Environment file (backend)
+backend/.env
+
+# Hardhat build outputs
+artifacts/
+cache/
+
+# OS and IDE files
+.DS_Store
+*.log
+.vscode/
