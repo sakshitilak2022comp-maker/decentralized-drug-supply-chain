@@ -16,14 +16,35 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Database connection
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+// ✅ Database connection (supports both DATABASE_URL and manual env vars)
+let dbConfig;
 
+if (process.env.DATABASE_URL) {
+  // Parse full connection URL
+  const dbUrl = new URL(process.env.DATABASE_URL);
+  dbConfig = {
+    host: dbUrl.hostname,
+    user: dbUrl.username,
+    password: dbUrl.password,
+    database: dbUrl.pathname.slice(1),
+    port: dbUrl.port || 3306,
+  };
+  console.log("📡 Using DATABASE_URL for connection:", dbConfig.host);
+} else {
+  // Fallback for local testing
+  dbConfig = {
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_NAME || "",
+    port: process.env.DB_PORT || 3306,
+  };
+  console.log("🧩 Using local DB connection settings");
+}
+
+const db = mysql.createConnection(dbConfig);
+
+// Try to connect
 db.connect((err) => {
   if (err) {
     console.error("❌ Database connection failed:", err);
@@ -36,18 +57,22 @@ db.connect((err) => {
 app.post("/register", (req, res) => {
   const { firstName, lastName, mobile, email, password } = req.body;
   if (!firstName || !lastName || !mobile || !email || !password)
-    return res.status(400).json({ success: false, message: "All fields required" });
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields required" });
 
   const checkQuery = "SELECT * FROM users WHERE email = ? OR mobile = ?";
   db.query(checkQuery, [email, mobile], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: err });
     if (results.length > 0)
-      return res.status(409).json({ success: false, message: "User already exists" });
+      return res
+        .status(409)
+        .json({ success: false, message: "User already exists" });
 
     const insertQuery = `
       INSERT INTO users (first_name, last_name, mobile, email, password, created_at)
       VALUES (?, ?, ?, ?, ?, NOW())
-`   ;
+    `;
     db.query(insertQuery, [firstName, lastName, mobile, email, password], (err) => {
       if (err) return res.status(500).json({ success: false, message: err });
       res.status(200).json({ success: true, message: "Registration successful" });
@@ -59,13 +84,17 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   const { mobile, password } = req.body;
   if (!mobile || !password)
-    return res.status(400).json({ success: false, message: "All fields required" });
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields required" });
 
   const query = "SELECT * FROM users WHERE mobile = ? AND password = ?";
   db.query(query, [mobile, password], (err, results) => {
     if (err) return res.status(500).json({ success: false, message: err });
     if (results.length === 0)
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
 
     const user = results[0];
     const logQuery = "INSERT INTO login_logs (user_id, login_time) VALUES (?, NOW())";
