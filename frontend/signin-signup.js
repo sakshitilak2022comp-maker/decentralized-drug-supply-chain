@@ -9,7 +9,7 @@ signInForm.addEventListener('submit', (e) => {
   const mobile = document.querySelector('#signin-num').value;
   const password = document.querySelector('#signin-pass').value;
 
-  fetch('http://localhost:5000/login', {
+  fetch('https://decentralized-drug-supply-chain.onrender.com/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ mobile, password }),
@@ -23,7 +23,7 @@ signInForm.addEventListener('submit', (e) => {
       alert(msg);
 
       if (data.success) {
-        window.location.href = 'http://localhost:5000/dashboard';
+        window.location.href = 'https://decentralized-drug-supply-chain.onrender.com/dashboard';
       }
     })
     .catch(err => {
@@ -44,11 +44,12 @@ signUpForm.addEventListener('submit', (e) => {
 
   console.log("📩 Sending signup data:", { firstName, lastName, mobile, email, password });
 
-  fetch('http://localhost:5000/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ firstName, lastName, mobile, email, password }),
-  })
+  fetch("https://decentralized-drug-supply-chain.onrender.com/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ firstName, lastName, mobile, email, password }),
+})
+
     .then(res => res.json())
     .then(data => {
       console.log("📝 Register response:", data);
