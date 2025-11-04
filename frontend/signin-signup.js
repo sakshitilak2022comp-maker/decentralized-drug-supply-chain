@@ -22,18 +22,10 @@ signInForm.addEventListener('submit', (e) => {
       const msg = typeof data.message === 'object' ? JSON.stringify(data.message) : data.message;
       alert(msg);
 
-      // if (data.success) {
-      //   window.location.href = 'https://decentralized-drug-supply-chain.onrender.com/daashboard';
-      // }
-
       if (data.success) {
-  const baseUrl = window.location.origin.includes("localhost")
-    ? "http://localhost:5500/frontend" // For local testing
-    : "https://decentralized-drug-supply.netlify.app"; // ✅ Your actual Netlify site
+        window.location.href = 'https://decentralized-drug-supply-chain.onrender.com/daashboard';
+      }
 
-  console.log("Redirecting to:", `${baseUrl}/index.html`);
-  window.location.href = `${baseUrl}/index.html`; // ✅ Dashboard page
-}
 
     })
     .catch(err => {
