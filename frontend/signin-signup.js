@@ -28,11 +28,13 @@ signInForm.addEventListener('submit', (e) => {
 
       if (data.success) {
   const baseUrl = window.location.origin.includes("localhost")
-    ? "http://localhost:5500/frontend" // or Live Server port
-    : "https://decentralized-drug-supply.netlify.app"; // your Netlify URL
+    ? "http://localhost:5500/frontend" // For local testing
+    : "https://decentralized-drug-supply.netlify.app"; // ✅ Your actual Netlify site
 
-  window.location.href = `${baseUrl}/index.html`;
+  console.log("Redirecting to:", `${baseUrl}/index.html`);
+  window.location.href = `${baseUrl}/index.html`; // ✅ Dashboard page
 }
+
     })
     .catch(err => {
       console.error('Login Error:', err);
